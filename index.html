@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" href="css/leaflet-search.css" />
+        <link rel="stylesheet" href="css/leaflet-measure.css" />
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-heat.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/ndicedeeducacin20090.js"></script>
+        <script src="data/ndicedeIngreso20091.js"></script>
+        <script src="data/Incendiosforestalesreportados20112.js"></script>
+        <script src="data/ndiceDesarrolloHumano20093.js"></script>
+        <script src="data/Tierrassinbosque4.js"></script>
+        <script src="data/Coberturadelsuelo20095.js"></script>
+        <script src="data/Fogonesconstruidos6.js"></script>
+        <script src="data/reasProtegidas7.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[12.5235764553,-89.7031563327],[16.8699594929,-83.0065521301]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var measureControl = new L.Control.Measure({
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap0.addTo(map);
+        function setBounds() {
+        }
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
+        function pop_ndicedeeducacin20090(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_ndicedeeducacin20090(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Municipio</strong><br />' + (feature.properties['NOMBRE'] !== null ? Autolinker.link(String(feature.properties['NOMBRE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Índice de educación</strong><br />' + (feature.properties['I_Educacio'] !== null ? Autolinker.link(String(feature.properties['I_Educacio'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_ndicedeeducacin20090(feature) {
+            if (feature.properties['I_Educacio'] >= 0.000000 && feature.properties['I_Educacio'] <= 0.598000 ) {
+                return {
+                pane: 'pane_ndicedeeducacin20090',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(255,245,240,0.4)',
+            }
+            }
+            if (feature.properties['I_Educacio'] >= 0.598000 && feature.properties['I_Educacio'] <= 0.636400 ) {
+                return {
+                pane: 'pane_ndicedeeducacin20090',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(252,189,164,0.4)',
+            }
+            }
+            if (feature.properties['I_Educacio'] >= 0.636400 && feature.properties['I_Educacio'] <= 0.681600 ) {
+                return {
+                pane: 'pane_ndicedeeducacin20090',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(251,112,80,0.4)',
+            }
+            }
+            if (feature.properties['I_Educacio'] >= 0.681600 && feature.properties['I_Educacio'] <= 0.717000 ) {
+                return {
+                pane: 'pane_ndicedeeducacin20090',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(211,32,32,0.4)',
+            }
+            }
+            if (feature.properties['I_Educacio'] >= 0.717000 && feature.properties['I_Educacio'] <= 0.849000 ) {
+                return {
+                pane: 'pane_ndicedeeducacin20090',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(103,0,13,0.4)',
+            }
+            }
+        }
+        map.createPane('pane_ndicedeeducacin20090');
+        map.getPane('pane_ndicedeeducacin20090').style.zIndex = 400;
+        map.getPane('pane_ndicedeeducacin20090').style['mix-blend-mode'] = 'normal';
+    var layer_ndicedeeducacin20090 = new L.geoJson(json_ndicedeeducacin20090, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_ndicedeeducacin20090',
+        onEachFeature: pop_ndicedeeducacin20090,
+        style: style_ndicedeeducacin20090
+    });
+        bounds_group.addLayer(layer_ndicedeeducacin20090);
+        function pop_ndicedeIngreso20091(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_ndicedeIngreso20091(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Municipio</strong><br />' + (feature.properties['NOMBRE'] !== null ? Autolinker.link(String(feature.properties['NOMBRE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Índice de ingresos</strong><br />' + (feature.properties['I_Ingresos'] !== null ? Autolinker.link(String(feature.properties['I_Ingresos'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_ndicedeIngreso20091(feature) {
+            if (feature.properties['I_Ingresos'] >= 0.000000 && feature.properties['I_Ingresos'] <= 0.458000 ) {
+                return {
+                pane: 'pane_ndicedeIngreso20091',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(255,245,240,0.4)',
+            }
+            }
+            if (feature.properties['I_Ingresos'] >= 0.458000 && feature.properties['I_Ingresos'] <= 0.489200 ) {
+                return {
+                pane: 'pane_ndicedeIngreso20091',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(252,189,164,0.4)',
+            }
+            }
+            if (feature.properties['I_Ingresos'] >= 0.489200 && feature.properties['I_Ingresos'] <= 0.516000 ) {
+                return {
+                pane: 'pane_ndicedeIngreso20091',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(251,112,80,0.4)',
+            }
+            }
+            if (feature.properties['I_Ingresos'] >= 0.516000 && feature.properties['I_Ingresos'] <= 0.559000 ) {
+                return {
+                pane: 'pane_ndicedeIngreso20091',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(211,32,32,0.4)',
+            }
+            }
+            if (feature.properties['I_Ingresos'] >= 0.559000 && feature.properties['I_Ingresos'] <= 0.706000 ) {
+                return {
+                pane: 'pane_ndicedeIngreso20091',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(103,0,13,0.4)',
+            }
+            }
+        }
+        map.createPane('pane_ndicedeIngreso20091');
+        map.getPane('pane_ndicedeIngreso20091').style.zIndex = 401;
+        map.getPane('pane_ndicedeIngreso20091').style['mix-blend-mode'] = 'normal';
+    var layer_ndicedeIngreso20091 = new L.geoJson(json_ndicedeIngreso20091, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_ndicedeIngreso20091',
+        onEachFeature: pop_ndicedeIngreso20091,
+        style: style_ndicedeIngreso20091
+    });
+        bounds_group.addLayer(layer_ndicedeIngreso20091);
+        function pop_Incendiosforestalesreportados20112(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Incendiosforestalesreportados20112(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Aldea</strong><br />' + (feature.properties['ALDEA'] !== null ? Autolinker.link(String(feature.properties['ALDEA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Municipio</strong><br />' + (feature.properties['MUNICIPIO'] !== null ? Autolinker.link(String(feature.properties['MUNICIPIO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Departamento</strong><br />' + (feature.properties['DEPARTAMEN'] !== null ? Autolinker.link(String(feature.properties['DEPARTAMEN'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Área afectada</strong><br />' + (feature.properties['áREA_AFECT'] !== null ? Autolinker.link(String(feature.properties['áREA_AFECT'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Incendiosforestalesreportados20112() {
+            return {
+                pane: 'pane_Incendiosforestalesreportados20112',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+            }
+        }
+        map.createPane('pane_Incendiosforestalesreportados20112');
+        map.getPane('pane_Incendiosforestalesreportados20112').style.zIndex = 402;
+        map.getPane('pane_Incendiosforestalesreportados20112').style['mix-blend-mode'] = 'normal';
+        var layer_Incendiosforestalesreportados20112 = new L.geoJson(json_Incendiosforestalesreportados20112, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_Incendiosforestalesreportados20112',
+            onEachFeature: pop_Incendiosforestalesreportados20112,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Incendiosforestalesreportados20112(feature))
+            }
+        });
+        bounds_group.addLayer(layer_Incendiosforestalesreportados20112);
+        function pop_ndiceDesarrolloHumano20093(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_ndiceDesarrolloHumano20093(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Municipio</strong><br />' + (feature.properties['NOMBRE'] !== null ? Autolinker.link(String(feature.properties['NOMBRE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Índice Desarrollo Humano</strong><br />' + (feature.properties['IDH_2009'] !== null ? Autolinker.link(String(feature.properties['IDH_2009'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_ndiceDesarrolloHumano20093(feature) {
+            if (feature.properties['IDH_2009'] >= 0.000000 && feature.properties['IDH_2009'] <= 0.597000 ) {
+                return {
+                pane: 'pane_ndiceDesarrolloHumano20093',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(255,245,240,0.4)',
+            }
+            }
+            if (feature.properties['IDH_2009'] >= 0.597000 && feature.properties['IDH_2009'] <= 0.624000 ) {
+                return {
+                pane: 'pane_ndiceDesarrolloHumano20093',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(252,189,164,0.4)',
+            }
+            }
+            if (feature.properties['IDH_2009'] >= 0.624000 && feature.properties['IDH_2009'] <= 0.640800 ) {
+                return {
+                pane: 'pane_ndiceDesarrolloHumano20093',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(251,112,80,0.4)',
+            }
+            }
+            if (feature.properties['IDH_2009'] >= 0.640800 && feature.properties['IDH_2009'] <= 0.675000 ) {
+                return {
+                pane: 'pane_ndiceDesarrolloHumano20093',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(211,32,32,0.4)',
+            }
+            }
+            if (feature.properties['IDH_2009'] >= 0.675000 && feature.properties['IDH_2009'] <= 0.787000 ) {
+                return {
+                pane: 'pane_ndiceDesarrolloHumano20093',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(103,0,13,0.4)',
+            }
+            }
+        }
+        map.createPane('pane_ndiceDesarrolloHumano20093');
+        map.getPane('pane_ndiceDesarrolloHumano20093').style.zIndex = 403;
+        map.getPane('pane_ndiceDesarrolloHumano20093').style['mix-blend-mode'] = 'normal';
+    var layer_ndiceDesarrolloHumano20093 = new L.geoJson(json_ndiceDesarrolloHumano20093, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_ndiceDesarrolloHumano20093',
+        onEachFeature: pop_ndiceDesarrolloHumano20093,
+        style: style_ndiceDesarrolloHumano20093
+    });
+        bounds_group.addLayer(layer_ndiceDesarrolloHumano20093);
+        function pop_Tierrassinbosque4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Tierrassinbosque4(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Hectáreas</strong><br />' + (feature.properties['AREA_HA'] !== null ? Autolinker.link(String(feature.properties['AREA_HA'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Tierrassinbosque4() {
+            return {
+                pane: 'pane_Tierrassinbosque4',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(171,107,28,1.0)',
+            }
+        }
+        map.createPane('pane_Tierrassinbosque4');
+        map.getPane('pane_Tierrassinbosque4').style.zIndex = 404;
+        map.getPane('pane_Tierrassinbosque4').style['mix-blend-mode'] = 'normal';
+    var layer_Tierrassinbosque4 = new L.geoJson(json_Tierrassinbosque4, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Tierrassinbosque4',
+        onEachFeature: pop_Tierrassinbosque4,
+        style: style_Tierrassinbosque4
+    });
+        bounds_group.addLayer(layer_Tierrassinbosque4);
+        function pop_Coberturadelsuelo20095(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Coberturadelsuelo20095(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Tipo de cobertura</strong><br />' + (feature.properties['COBERTURA'] !== null ? Autolinker.link(String(feature.properties['COBERTURA'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Coberturadelsuelo20095(feature) {
+            switch(feature.properties['COBERTURA']) {
+                case 'ACUICULTURA':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(31,120,180,0.4)',
+            }
+                    break;
+                case 'AGROCOMERCIAL':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,0.4)',
+            }
+                    break;
+                case 'AGROPECUARIO':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(236,233,141,0.4)',
+            }
+                    break;
+                case 'AREAS URBANAS':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(156,7,129,0.4)',
+            }
+                    break;
+                case 'BOSQUE DE MANGLE':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,0.4)',
+            }
+                    break;
+                case 'BOSQUE LATIFOLIADO':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(117,203,95,0.4)',
+            }
+                    break;
+                case 'BOSQUE MIXTO':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(117,214,124,0.4)',
+            }
+                    break;
+                case 'BOSQUE PINAR DENSO':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(2,64,11,0.4)',
+            }
+                    break;
+                case 'BOSQUE PINAR RALO':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(177,206,173,0.4)',
+            }
+                    break;
+                case 'BOSQUE SECO':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(201,178,93,0.4)',
+            }
+                    break;
+                case 'CUERPOS DE AGUA':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(15,59,88,0.4)',
+            }
+                    break;
+                case 'MATORRALES':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(185,236,17,0.4)',
+            }
+                    break;
+                case 'SABANA CON ARBOLES':
+                    return {
+                pane: 'pane_Coberturadelsuelo20095',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(92,218,174,0.4)',
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Coberturadelsuelo20095');
+        map.getPane('pane_Coberturadelsuelo20095').style.zIndex = 405;
+        map.getPane('pane_Coberturadelsuelo20095').style['mix-blend-mode'] = 'normal';
+    var layer_Coberturadelsuelo20095 = new L.geoJson(json_Coberturadelsuelo20095, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Coberturadelsuelo20095',
+        onEachFeature: pop_Coberturadelsuelo20095,
+        style: style_Coberturadelsuelo20095
+    });
+        bounds_group.addLayer(layer_Coberturadelsuelo20095);
+        function pop_Fogonesconstruidos6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Fogonesconstruidos6(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Lote</strong><br />' + (feature.properties['Lote'] !== null ? Autolinker.link(String(feature.properties['Lote'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Tipo de fogón</strong><br />' + (feature.properties['Tipo'] !== null ? Autolinker.link(String(feature.properties['Tipo'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Departamento</strong><br />' + (feature.properties['Depto'] !== null ? Autolinker.link(String(feature.properties['Depto'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Municipio</strong><br />' + (feature.properties['Municipio'] !== null ? Autolinker.link(String(feature.properties['Municipio'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Comunidad</strong><br />' + (feature.properties['Comunidad'] !== null ? Autolinker.link(String(feature.properties['Comunidad'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Beneficiario</strong><br />' + (feature.properties['Cliente'] !== null ? Autolinker.link(String(feature.properties['Cliente'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Edad del beneficiario</strong><br />' + (feature.properties['Edad'] !== null ? Autolinker.link(String(feature.properties['Edad'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Fogonesconstruidos6() {
+            return {
+                pane: 'pane_Fogonesconstruidos6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+            }
+        }
+        map.createPane('pane_Fogonesconstruidos6');
+        map.getPane('pane_Fogonesconstruidos6').style.zIndex = 406;
+        map.getPane('pane_Fogonesconstruidos6').style['mix-blend-mode'] = 'normal';
+        var layer_Fogonesconstruidos6 = new L.geoJson(json_Fogonesconstruidos6, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_Fogonesconstruidos6',
+            onEachFeature: pop_Fogonesconstruidos6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Fogonesconstruidos6(feature))
+            }
+        });
+        bounds_group.addLayer(layer_Fogonesconstruidos6);
+        map.addLayer(layer_Fogonesconstruidos6);
+        function pop_reasProtegidas7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_reasProtegidas7(feature));
+
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Nombre Área Protegida</strong><br />' + (feature.properties['NOMBRE'] !== null ? Autolinker.link(String(feature.properties['NOMBRE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Nombre de Cuenca</strong><br />' + (feature.properties['CUENCA'] !== null ? Autolinker.link(String(feature.properties['CUENCA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Descripción</strong><br />' + (feature.properties['DESCRIPCIO'] !== null ? Autolinker.link(String(feature.properties['DESCRIPCIO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Institución administradora</strong><br />' + (feature.properties['PRES_INSTI'] !== null ? Autolinker.link(String(feature.properties['PRES_INSTI'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_reasProtegidas7() {
+            return {
+                pane: 'pane_reasProtegidas7',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,0.4)',
+            }
+        }
+        map.createPane('pane_reasProtegidas7');
+        map.getPane('pane_reasProtegidas7').style.zIndex = 407;
+        map.getPane('pane_reasProtegidas7').style['mix-blend-mode'] = 'normal';
+    var layer_reasProtegidas7 = new L.geoJson(json_reasProtegidas7, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_reasProtegidas7',
+        onEachFeature: pop_reasProtegidas7,
+        style: style_reasProtegidas7
+    });
+        bounds_group.addLayer(layer_reasProtegidas7);
+        map.addLayer(layer_reasProtegidas7);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/reasProtegidas7.png" /> Áreas Protegidas': layer_reasProtegidas7,'<img src="legend/Fogonesconstruidos6.png" /> Fogones construidos': layer_Fogonesconstruidos6,'Cobertura del suelo 2009<br /><table><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Acuicultura0.png" /></td><td>Acuicultura</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Agrocomercial1.png" /></td><td>Agrocomercial</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Agropecuario2.png" /></td><td>Agropecuario</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_reasurbanas3.png" /></td><td>Áreas urbanas</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Bosquedemangle4.png" /></td><td>Bosque de mangle</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Bosquelatifoliado5.png" /></td><td>Bosque latifoliado</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_BosqueMixto6.png" /></td><td>Bosque Mixto</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Bosquepinardenso7.png" /></td><td>Bosque pinar denso</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Bosquepinarralo8.png" /></td><td>Bosque pinar ralo</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Bosqueseco9.png" /></td><td>Bosque seco</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Cuerposdeagua10.png" /></td><td>Cuerpos de agua</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Matorrales11.png" /></td><td>Matorrales</td></tr><tr><td style="text-align: center;"><img src="legend/Coberturadelsuelo20095_Sabanaconrboles12.png" /></td><td>Sabana con árboles</td></tr></table>': layer_Coberturadelsuelo20095,'<img src="legend/Tierrassinbosque4.png" /> Tierras sin bosque': layer_Tierrassinbosque4,'Índice Desarrollo Humano 2009<br /><table><tr><td style="text-align: center;"><img src="legend/ndiceDesarrolloHumano20093_00000059700.png" /></td><td> 0.0000 - 0.5970 </td></tr><tr><td style="text-align: center;"><img src="legend/ndiceDesarrolloHumano20093_05970062401.png" /></td><td> 0.5970 - 0.6240 </td></tr><tr><td style="text-align: center;"><img src="legend/ndiceDesarrolloHumano20093_06240064082.png" /></td><td> 0.6240 - 0.6408 </td></tr><tr><td style="text-align: center;"><img src="legend/ndiceDesarrolloHumano20093_06408067503.png" /></td><td> 0.6408 - 0.6750 </td></tr><tr><td style="text-align: center;"><img src="legend/ndiceDesarrolloHumano20093_06750078704.png" /></td><td> 0.6750 - 0.7870 </td></tr></table>': layer_ndiceDesarrolloHumano20093,'<img src="legend/Incendiosforestalesreportados20112.png" /> Incendios forestales reportados 2011': layer_Incendiosforestalesreportados20112,'Índice de Ingreso 2009<br /><table><tr><td style="text-align: center;"><img src="legend/ndicedeIngreso20091_000004580.png" /></td><td> 0.000 - 0.458 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeIngreso20091_045804891.png" /></td><td> 0.458 - 0.489 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeIngreso20091_048905162.png" /></td><td> 0.489 - 0.516 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeIngreso20091_051605593.png" /></td><td> 0.516 - 0.559 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeIngreso20091_055907064.png" /></td><td> 0.559 - 0.706 </td></tr></table>': layer_ndicedeIngreso20091,'Índice de educación 2009<br /><table><tr><td style="text-align: center;"><img src="legend/ndicedeeducacin20090_000005980.png" /></td><td> 0.000 - 0.598 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeeducacin20090_059806361.png" /></td><td> 0.598 - 0.636 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeeducacin20090_063606822.png" /></td><td> 0.636 - 0.682 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeeducacin20090_068207173.png" /></td><td> 0.682 - 0.717 </td></tr><tr><td style="text-align: center;"><img src="legend/ndicedeeducacin20090_071708494.png" /></td><td> 0.717 - 0.849 </td></tr></table>': layer_ndicedeeducacin20090,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_Fogonesconstruidos6,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Cliente'}));
+        </script>
+    </body>
+</html>
